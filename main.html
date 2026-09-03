@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chulhee | 강의 신청</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --beige: #F7F4EF;
+      /* 달콤 베이지 - 배경 전체 */
+      --white: #FFFFFF;
+      /* 클린 화이트 - 카드/섹션 배경 */
+      --brown: #4A3B32;
+      /* 코지 브라운 - 본문 텍스트/다크 섹션 배경 */
+      --brown-soft: #6b594c;
+      /* 코지 브라운 대비용 밝은 톤 (다크 배경 위 보조 텍스트) */
+      --phone: #E2C9B1;
+      /* 소프트 폰 - 구분선/서브버튼/배지 */
+      --sage: #8A9A86;
+      /* 세이지 그린 - CTA 버튼/포인트 */
+      --sage-hover: #78897d;
+      /* 세이지 그린 명도 변화(hover 전용, 동일 색상 계열) */
+      --sage-light: #a3b09f;
+      --max: 1200px;
+      --font-head: 'Noto Serif KR', 'Malgun Gothic', serif;
+      --font-body: 'Pretendard', 'Malgun Gothic', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--brown);
+      background: var(--beige);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-head);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--brown);
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5.2vw, 3.7rem);
+      line-height: 1.32;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 3.6vw, 2.7rem);
+      line-height: 1.4;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      line-height: 1.4;
+    }
+
+    p {
+      margin: 0 0 1em 0;
+      font-size: 1.08rem;
+    }
+
+    .overline {
+      display: inline-block;
+      font-weight: 600;
+      font-size: .92rem;
+      letter-spacing: .16em;
+      color: var(--sage);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .overline.on-dark {
+      color: var(--phone);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: filter .15s ease, background .15s ease;
+      white-space: nowrap;
+      font-family: var(--font-body);
+    }
+
+    .btn-primary {
+      background: var(--sage);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(.92);
+    }
+
+    .btn-secondary {
+      background: var(--brown);
+      color: var(--white);
+    }
+
+    .btn-secondary:hover {
+      filter: brightness(1.12);
+    }
+
+    .btn-outline {
+      background: var(--white);
+      color: var(--brown);
+      border-color: var(--phone);
+    }
+
+    .btn-outline:hover {
+      filter: brightness(.97);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background .35s ease, border-color .35s ease;
+    }
+
+    header.scrolled {
+      background: var(--beige);
+      border-bottom-color: var(--phone);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .brand-text {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--white);
+      transition: color .3s ease;
+    }
+
+    header.scrolled .brand-text {
+      color: var(--brown);
+    }
+
+    nav.menu {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    nav.menu a {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--white);
+      transition: color .15s;
+    }
+
+    header.scrolled nav.menu a {
+      color: var(--brown);
+    }
+
+    nav.menu a:hover {
+      color: var(--sage-light);
+    }
+
+    header.scrolled nav.menu a:hover {
+      color: var(--sage-hover);
+    }
+
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-btn {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .menu-btn span {
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      display: block;
+      transition: background .3s ease;
+    }
+
+    header.scrolled .menu-btn span {
+      background: var(--brown);
+    }
+
+    #mobileMenu {
+      display: none;
+      flex-direction: column;
+      padding: 0 32px 18px;
+      background: var(--beige);
+      border-top: 1px solid var(--phone);
+    }
+
+    #mobileMenu a {
+      padding: 12px 0;
+      font-weight: 600;
+      color: var(--brown);
+    }
+
+    section {
+      padding: 110px 0;
+    }
+
+    section[id] {
+      scroll-margin-top: 84px;
+    }
+
+    .section-head {
+      max-width: 680px;
+      margin: 0 0 48px;
+    }
+
+    .section-head.center {
+      margin: 0 auto 56px;
+      text-align: center;
+    }
+
+    /* Hero — full-bleed autoplay video */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      text-align: center;
+    }
+
+    .hero-bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(30, 23, 18, .62) 0%, rgba(30, 23, 18, .4) 45%, rgba(30, 23, 18, .78) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+    }
+
+    .hero h1 {
+      color: var(--white);
+    }
+
+    .hero-lead {
+      font-size: 1.18rem;
+      color: #f1ece3;
+      max-width: 560px;
+      margin: 22px auto 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      background: var(--phone);
+      color: var(--brown);
+      font-weight: 600;
+      font-size: .92rem;
+      padding: 9px 18px;
+      border-radius: 999px;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin: 36px 0 44px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .trust-row {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: .98rem;
+      color: #f1ece3;
+    }
+
+    .trust-item::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sage-light);
+      flex: none;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      left: 50%;
+      bottom: 34px;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: var(--white);
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: .85;
+    }
+
+    .scroll-cue span {
+      width: 1px;
+      height: 34px;
+      background: rgba(255, 255, 255, .6);
+      animation: cue-move 1.8s ease-in-out infinite;
+    }
+
+    @keyframes cue-move {
+      0% {
+        transform: scaleY(0);
+        transform-origin: top;
+      }
+
+      50% {
+        transform: scaleY(1);
+        transform-origin: top;
+      }
+
+      50.01% {
+        transform-origin: bottom;
+      }
+
+      100% {
+        transform: scaleY(0);
+        transform-origin: bottom;
+      }
+    }
+
+    /* WHY */
+    .why {
+      background: var(--beige);
+      border-top: 1px solid var(--phone);
+      border-bottom: 1px solid var(--phone);
+    }
+
+    .why .wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .why-quote {
+      background: var(--white);
+      border-left: 4px solid var(--sage);
+      border-radius: 0 10px 10px 0;
+      padding: 20px 24px;
+      margin: 22px 0 28px;
+      box-shadow: 0 6px 20px rgba(74, 59, 50, .06);
+    }
+
+    .why-quote p {
+      margin: 0;
+      color: var(--brown);
+      font-size: 1.05rem;
+      line-height: 1.78;
+    }
+
+    .why-quote strong {
+      color: #3b5037;
+      font-weight: 600;
+    }
+
+    .why-list {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-top: 34px;
+    }
+
+    .why-item {
+      display: flex;
+      gap: 20px;
+    }
+
+    .why-num {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--sage);
+      flex: none;
+      width: 52px;
+    }
+
+    .why-item h3 {
+      margin-bottom: 6px;
+      font-size: 1.2rem;
+    }
+
+    .why-item p {
+      margin: 0;
+      color: var(--brown-soft);
+      font-size: 1.02rem;
+    }
+
+    .why-visual {
+      position: relative;
+    }
+
+    .why-visual .main-shot {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--phone);
+      box-shadow: 0 20px 44px rgba(74, 59, 50, .14);
+    }
+
+    .why-visual .main-shot img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+    }
+
+    .why-visual .accent-shot {
+      position: absolute;
+      width: 46%;
+      bottom: -34px;
+      left: -30px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 6px solid var(--white);
+      box-shadow: 0 16px 32px rgba(74, 59, 50, .2);
+      transform: rotate(-4deg);
+    }
+
+    .why-visual .accent-shot img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    /* Marquee */
+    .marquee-wrap {
+      background: var(--phone);
+      overflow: hidden;
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(74, 59, 50, .1);
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: scroll-left 26s linear infinite;
+    }
+
+    .marquee-track span {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--brown);
+      padding: 0 26px;
+      white-space: nowrap;
+    }
+
+    @keyframes scroll-left {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track {
+        animation: none;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* Curriculum */
+    .curriculum {
+      background: var(--white);
+    }
+
+    .grid-curriculum {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .curr-card {
+      background: var(--white);
+      border: 1px solid var(--phone);
+      border-radius: 12px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 18px rgba(74, 59, 50, .05);
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .curr-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 36px rgba(74, 59, 50, .12);
+      border-color: var(--sage);
+    }
+
+    .curr-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .curr-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--sage);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 1.1rem;
+      font-family: var(--font-head);
+      flex-shrink: 0;
+    }
+
+    .curr-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .curr-tag {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--sage);
+      text-transform: uppercase;
+    }
+
+    .curr-meta h3 {
+      font-size: 1.45rem;
+      color: var(--brown);
+      margin: 0;
+    }
+
+    .curr-highlight {
+      font-size: 1.12rem;
+      font-weight: 600;
+      color: var(--brown);
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--phone);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .curr-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(138, 154, 134, .18);
+      color: #3b5037;
+      font-size: .8rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(138, 154, 134, .35);
+    }
+
+    .curr-desc {
+      margin: 0;
+      color: var(--brown-soft);
+      font-size: 1.02rem;
+      line-height: 1.68;
+    }
+
+    .curr-desc strong {
+      color: var(--brown);
+      font-weight: 600;
+    }
+
+    /* Recent lecture */
+    .recent {
+      background: var(--beige);
+    }
+
+    .recent .wrap {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .recent-poster {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--phone);
+      box-shadow: 0 20px 44px rgba(74, 59, 50, .14);
+    }
+
+    .recent-side {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .recent-video {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--phone);
+      box-shadow: 0 14px 30px rgba(74, 59, 50, .12);
+    }
+
+    .recent-video video {
+      width: 100%;
+      display: block;
+      background: var(--brown);
+    }
+
+    .recent-caption {
+      font-weight: 600;
+      color: var(--brown-soft);
+      font-size: 1rem;
+    }
+
+    /* Instructor */
+    .instructor {
+      background: var(--brown);
+      color: var(--white);
+    }
+
+    .instructor h2,
+    .instructor h3 {
+      color: var(--white);
+    }
+
+    .instructor .wrap {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .inst-slogan {
+      font-family: var(--font-head);
+      font-size: 1.25rem;
+      color: var(--phone);
+      font-style: italic;
+      margin: 0 0 14px;
+      line-height: 1.45;
+    }
+
+    .inst-name-wrap {
+      margin-bottom: 20px;
+    }
+
+    .inst-name-wrap h2 {
+      font-size: clamp(2rem, 3.8vw, 2.7rem);
+      line-height: 1.25;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .inst-alias {
+      font-size: 1.3rem;
+      color: var(--phone);
+      font-weight: 400;
+    }
+
+    .inst-role {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--sage-light);
+      letter-spacing: .04em;
+    }
+
+    .inst-intro {
+      font-size: 1.06rem;
+      line-height: 1.75;
+      color: #ede5dc;
+      margin-bottom: 30px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(226, 201, 177, .22);
+    }
+
+    .inst-details {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .inst-block h4 {
+      font-family: var(--font-head);
+      color: var(--phone);
+      font-size: 1.08rem;
+      font-weight: 600;
+      margin: 0 0 10px;
+      letter-spacing: .02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .inst-block h4::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage);
+    }
+
+    .inst-career-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .inst-career-list li {
+      font-size: .98rem;
+      color: #e5ded6;
+      line-height: 1.55;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .inst-career-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--phone);
+      font-size: 1rem;
+    }
+
+    .inst-edu {
+      font-size: .98rem;
+      color: #e5ded6;
+      margin: 0;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .inst-edu::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--phone);
+    }
+
+    .cert-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(0, 0, 0, .18);
+      border: 1px solid rgba(226, 201, 177, .2);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+
+    .cert-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cert-label {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--phone);
+      letter-spacing: .04em;
+    }
+
+    .cert-items {
+      margin: 0;
+      font-size: .95rem;
+      color: #f3eee8;
+      line-height: 1.55;
+    }
+
+    .instructor-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .instructor-badges span {
+      background: rgba(226, 201, 177, .14);
+      border: 1px solid var(--phone);
+      color: var(--phone);
+      font-weight: 600;
+      font-size: .88rem;
+      padding: 8px 16px;
+      border-radius: 999px;
+    }
+
+    .instructor-photo {
+      position: sticky;
+      top: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 26px 56px rgba(0, 0, 0, .32);
+      border: 1px solid rgba(226, 201, 177, .25);
+      background: #392b23;
+    }
+
+    .instructor-photo img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      object-position: 68% 28%;
+      display: block;
+    }
+
+    .photo-caption {
+      padding: 18px 22px;
+      background: rgba(30, 23, 18, .88);
+      border-top: 1px solid rgba(226, 201, 177, .18);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .photo-caption strong {
+      font-family: var(--font-head);
+      color: var(--white);
+      font-size: 1.15rem;
+    }
+
+    .photo-caption span {
+      font-size: .88rem;
+      color: var(--phone);
+    }
+
+    /* Apply form */
+    .apply {
+      background: var(--beige);
+    }
+
+    .apply-card {
+      max-width: 640px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 8px;
+      border: 1px solid var(--phone);
+      box-shadow: 0 20px 48px rgba(74, 59, 50, .12);
+      padding: 52px 44px;
+    }
+
+    .apply-card .overline,
+    .apply-card h2 {
+      text-align: center;
+      display: block;
+    }
+
+    .apply-card>p {
+      text-align: center;
+      color: var(--brown-soft);
+      margin-bottom: 36px;
+    }
+
+    .field {
+      margin-bottom: 24px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .field .optional {
+      font-weight: 400;
+      color: var(--brown-soft);
+      font-size: .9rem;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 16px 18px;
+      font-size: 1.05rem;
+      font-family: var(--font-body);
+      border: 1.5px solid var(--phone);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--brown);
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: 2px solid var(--sage);
+      outline-offset: 1px;
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .form-note {
+      text-align: center;
+      font-size: .9rem;
+      color: var(--brown-soft);
+      margin-top: 16px;
+    }
+
+    #formSuccess {
+      display: none;
+      text-align: center;
+      background: rgba(138, 154, 134, .12);
+      border: 1px solid var(--sage);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--brown);
+      color: #e7ded4;
+      padding: 70px 0 30px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid rgba(226, 201, 177, .25);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .footer-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+
+    .footer-brand b {
+      font-family: var(--font-head);
+      font-size: 1.15rem;
+      color: var(--white);
+    }
+
+    footer h4 {
+      color: var(--white);
+      font-size: 1rem;
+      margin: 0 0 16px;
+      font-weight: 600;
+    }
+
+    footer .links a {
+      display: block;
+      padding: 6px 0;
+      color: #e7ded4;
+      font-size: .98rem;
+    }
+
+    footer .links a:hover {
+      color: var(--phone);
+    }
+
+    .copyright {
+      padding-top: 26px;
+      font-size: .9rem;
+      color: #c9bcae;
+    }
+
+    @media (max-width:960px) {
+
+      .why .wrap,
+      .instructor .wrap,
+      .recent .wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .why-visual {
+        order: -1;
+        margin-bottom: 40px;
+      }
+
+      .grid-curriculum {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      nav.menu {
+        display: none;
+      }
+
+      .menu-btn {
+        display: flex;
+      }
+    }
+
+    @media (max-width:640px) {
+      body {
+        font-size: 17px;
+      }
+
+      section {
+        padding: 76px 0;
+      }
+
+      .wrap {
+        padding: 0 22px;
+      }
+
+      .hero-content {
+        padding: 100px 22px 64px;
+      }
+
+      .hero-actions,
+      .recent .wrap {
+        flex-direction: column;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+
+      .apply-card {
+        padding: 38px 24px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="nav wrap">
+      <div class="brand">
+      </div>
+      <nav class="menu">
+        <a href="#why">강의소개</a>
+        <a href="#curriculum">커리큘럼</a>
+        <a href="#instructor">강사소개</a>
+        <a href="#apply">강의신청</a>
+      </nav>
+      <div class="header-cta">
+        <a href="#apply" class="btn btn-primary" style="padding:12px 24px; font-size:.95rem;">무료 상담 신청</a>
+        <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <nav id="mobileMenu">
+      <a href="#why">강의소개</a>
+      <a href="#curriculum">커리큘럼</a>
+      <a href="#instructor">강사소개</a>
+      <a href="#apply">강의신청</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="hero">
+    <video class="hero-bg-video" autoplay muted loop playsinline poster="main.png">
+      <source src="동영상.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content reveal">
+      <span class="badge-pill">AI 융합 실무 특강</span>
+      <h1>오늘 배운 AI,<br>내일 바로 성과로 씁니다</h1>
+      <p class="hero-lead">25년 현장 노하우와 대학 교수의 전문성, 실무에 즉시 적용 가능한 진짜 AI 활용법을 전수합니다.</p>
+      <div class="hero-actions">
+        <a href="#apply" class="btn btn-primary">강의 신청하기</a>
+        <a href="#why" class="btn btn-outline">강의소개 보기</a>
+      </div>
+      <div class="trust-row">
+        <div class="trust-item">25년 현장 노하우</div>
+        <div class="trust-item">인공지능학과 특임교수 직강</div>
+        <div class="trust-item">실무 즉시 적용 실습</div>
+      </div>
+    </div>
+    <a href="#why" class="scroll-cue" aria-label="아래로 스크롤"><span></span>SCROLL</a>
+  </section>
+
+  <section class="why" id="why">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="overline">COURSE INTRODUCTION · 강의 소개</span>
+        <h2 style="font-size:clamp(1.75rem,3.2vw,2.35rem); line-height:1.35; margin-bottom:18px;">
+          25년 현장 노하우와 대학 교수의 전문성,<br>
+          여러분의 AI 실무를 위한 '유일한' 융합 전문가
+        </h2>
+        <div class="why-quote">
+          <p>
+            한국열린사이버대학교 인공지능학과 특임교수이자<br>
+            20년 이상 교육·복지 현장을 누빈 <strong>김철희 전문가</strong>가<br>
+            현장의 언어로, 실무에 즉시 적용 가능한<br>
+            <strong>진짜 AI 활용법</strong>을 전수합니다.
+          </p>
+        </div>
+        <div class="why-list">
+          <div class="why-item">
+            <div class="why-num">01</div>
+            <div>
+              <h3>현장의 언어로 쉽게</h3>
+              <p>어려운 코딩이나 전문 용어 없이, 누구나 실생활과 업무에서 바로 쓸 수 있도록 설명합니다.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-num">02</div>
+            <div>
+              <h3>검증된 대학교수 직강</h3>
+              <p>25년 이상의 풍부한 현장 경험과 인공지능학과 특임교수의 전문성이 결합된 체계적인 강의입니다.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-num">03</div>
+            <div>
+              <h3>실무 즉시 적용 솔루션</h3>
+              <p>단순 도구 사용법이 아닌, 내일 바로 업무 성과로 이어지는 실질적인 융합 솔루션을 전수합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="why-visual reveal">
+        <div class="main-shot"><img src="강의장면1.jpg" alt="AI 실무 특강 강의 현장"></div>
+        <div class="accent-shot"><img src="강의장면2.jpg" alt="중장년·소상공인 디지털 교육 현장"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>실무 AI 활용 ★ 업무 자동화 ★ 기획·마케팅 ★ 신규사업 발굴 ★ 클로드 코워크 ★ 챗GPT·제미나이 ★ 실무 AI 활용 ★ 업무 자동화 ★ 기획·마케팅 ★ 신규사업 발굴 ★ 클로드 코워크
+        ★ 챗GPT·제미나이 ★</span>
+      <span aria-hidden="true">실무 AI 활용 ★ 업무 자동화 ★ 기획·마케팅 ★ 신규사업 발굴 ★ 클로드 코워크 ★ 챗GPT·제미나이 ★ 실무 AI 활용 ★ 업무 자동화 ★ 기획·마케팅 ★
+        신규사업 발굴 ★ 클로드 코워크 ★ 챗GPT·제미나이 ★</span>
+    </div>
+  </div>
+
+  <section class="curriculum" id="curriculum">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="overline">CURRICULUM</span>
+        <h2>핵심 교육 &amp; 전문 상담 과정</h2>
+        <p style="color:var(--brown-soft); margin-top:12px; font-size:1.05rem;">
+          25년 현장 노하우와 대학 교수의 전문성을 담은 맞춤형 커리큘럼
+        </p>
+      </div>
+      <div class="grid-curriculum">
+        <div class="curr-card reveal">
+          <div class="curr-header">
+            <div class="curr-num">01</div>
+            <div class="curr-meta">
+              <span class="curr-tag">Parenting &amp; Future</span>
+              <h3>학부모 교육</h3>
+            </div>
+          </div>
+          <div class="curr-highlight">AI시대 융합형자녀로 키우는 교육</div>
+          <p class="curr-desc">
+            미래 인재로 키우는 부모의 역할<br>
+            <strong>25년 현장 노하우</strong>로 전수합니다.
+          </p>
+        </div>
+
+        <div class="curr-card reveal">
+          <div class="curr-header">
+            <div class="curr-num">02</div>
+            <div class="curr-meta">
+              <span class="curr-tag">Practical AI</span>
+              <h3>AI교육</h3>
+            </div>
+          </div>
+          <div class="curr-highlight">
+            AI와 함께하는 스마트한 미래
+            <span class="curr-badge">대학교수 직강!</span>
+          </div>
+          <p class="curr-desc">
+            기초부터 실무까지, <strong>AI 융합교육 전문가</strong>의<br>
+            살아있는 강의
+          </p>
+        </div>
+
+        <div class="curr-card reveal">
+          <div class="curr-header">
+            <div class="curr-num">03</div>
+            <div class="curr-meta">
+              <span class="curr-tag">Senior Health</span>
+              <h3>낙상예방교육</h3>
+            </div>
+          </div>
+          <div class="curr-highlight">시니어 건강을 위한 안전 생활가이드</div>
+          <p class="curr-desc">
+            현장 경험이 풍부한 전문가가 알려주는<br>
+            <strong>안전하고 건강한 노후를 위한 필수교육</strong>
+          </p>
+        </div>
+
+        <div class="curr-card reveal">
+          <div class="curr-header">
+            <div class="curr-num">04</div>
+            <div class="curr-meta">
+              <span class="curr-tag">Counseling &amp; MBTI</span>
+              <h3>전문상담</h3>
+            </div>
+          </div>
+          <div class="curr-highlight">마음을 치유하고 미래를 설계하는 전문 상담</div>
+          <p class="curr-desc">
+            교직생활과 전문상담사 자격보유<br>
+            <strong>진로 / 심리 / MBTI 성격유형</strong> 등 맞춤형 전문상담 서비스를 제공합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="recent">
+    <div class="wrap">
+      <div class="recent-poster reveal">
+
+        <div class="recent-side reveal">
+          <span class="overline">RECENT LECTURE</span>
+          <h2 style="font-size:clamp(1.6rem,3vw,2.1rem);">최근 진행한 특강 현장</h2>
+          <p style="color:var(--brown-soft); margin:16px 0 8px;">서초시니어라운지 강의 — 따라 하면 끝나는 구성으로 진행됩니다.</p>
+          <div class="recent-video">
+            <video controls preload="metadata" poster="강의장면1.jpg">
+              <source src="동영상.mp4" type="video/mp4">
+              브라우저가 동영상 재생을 지원하지 않습니다.
+            </video>
+          </div>
+          <div class="recent-caption">강의 하이라이트 영상</div>
+        </div>
+      </div>
+  </section>
+
+  <section class="instructor" id="instructor">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="overline on-dark">INSTRUCTOR</span>
+        <p class="inst-slogan">“현장의 경험과 미래 기술을 잇는 융합형 전문가”</p>
+        <div class="inst-name-wrap">
+          <h2>김철희 <span class="inst-alias">(라희)</span></h2>
+          <span class="inst-role">교육 · 복지 · 진로 · AI 융합 전문가</span>
+        </div>
+        <p class="inst-intro">
+          20년 이상 교육과 복지, 상담 현장에서 쌓아온 깊은 이해에 최신 AI 기술을 결합하여,<br>
+          누구나 실생활과 현장에서 바로 적용할 수 있는 실질적인 솔루션을 제시합니다.
+        </p>
+
+        <div class="inst-details">
+          <div class="inst-block">
+            <h4>주요 약력 &amp; 경력</h4>
+            <ul class="inst-career-list">
+              <li>한국열린사이버대학교 인공지능학과 특임교수</li>
+              <li>서울대학교 경력개발센터 강사</li>
+              <li>서초50플러스센터 AI 강사</li>
+              <li>한국공공정책협회 연구위원</li>
+              <li>전) 지역아동센터 대표 및 센터장 (서울지역아동센터 전체회장)</li>
+              <li>전) 서울시교육청 진로상담</li>
+              <li>전) 유럽 벨기에한국학교 교장</li>
+            </ul>
+          </div>
+
+          <div class="inst-block">
+            <h4>학력</h4>
+            <p class="inst-edu">연세대학교 행정대학원 행정사회복지 전공</p>
+          </div>
+
+          <div class="inst-block">
+            <h4>보유 전문 자격</h4>
+            <div class="cert-group">
+              <div class="cert-row">
+                <span class="cert-label">전문 교육 · 상담</span>
+                <p class="cert-items">교원자격증 · 평생교육사 · 사회복지사 · 진로상담사 · 심리상담사 1급 · MBTI 심리상담 1급</p>
+              </div>
+              <div class="cert-row">
+                <span class="cert-label">디지털 · IT</span>
+                <p class="cert-items">AI 활용지도사 · 정보처리기능사 · 드론자격증</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="instructor-badges">
+          <span>한국열린사이버대 AI 특임교수</span>
+          <span>서울대 경력개발센터 강사</span>
+          <span>서초50플러스센터 AI 강사</span>
+          <span>연세대 석사</span>
+          <span>교육·상담·AI 융합</span>
+        </div>
+      </div>
+      <div class="instructor-photo reveal">
+        <img src="main.png" alt="김철희 (라희) 교수 프로필 사진">
+        <div class="photo-caption">
+          <strong>김철희 교수 (라희)</strong>
+          <span>교육 · 복지 · 진로 · AI 융합 전문가</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="apply" id="apply">
+    <div class="wrap">
+      <div class="apply-card reveal">
+        <span class="overline">APPLY NOW</span>
+        <h2>강의 신청하기</h2>
+        <p>아래 정보를 남겨주시면 담당자가 확인 후 자세한 안내를 드립니다.</p>
+        <div id="formSuccess">신청이 접수되었습니다. 담당자가 확인 후 안내드리겠습니다.</div>
+        <form id="applyForm">
+          <div class="field">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" placeholder="성함을 입력해 주세요" required>
+          </div>
+          <div class="field">
+            <label for="phone">연락처</label>
+            <input type="tel" id="phone" name="phone" placeholder="010-0000-0000" required>
+          </div>
+          <div class="field">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" placeholder="example@email.com" required>
+          </div>
+          <div class="field">
+            <label for="interest">관심 과정</label>
+            <select id="interest" name="interest">
+              <option value="학부모 교육">1. 학부모 교육 (AI시대 융합형자녀 교육)</option>
+              <option value="AI교육">2. AI교육 (스마트한 미래 &amp; 살아있는 강의)</option>
+              <option value="낙상예방교육">3. 낙상예방교육 (시니어 건강 &amp; 노후 안전 가이드)</option>
+              <option value="전문상담">4. 전문상담 (진로 / 심리 / MBTI 맞춤형 상담)</option>
+              <option value="종합/기타 문의">종합 / 기타 교육 및 상담 문의</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">하고 싶은 말 <span class="optional">(선택)</span></label>
+            <textarea id="message" name="message" placeholder="궁금하신 점이나 남기고 싶은 말씀을 적어주세요"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">신청서 제출하기</button>
+        </form>
+        <p class="form-note">입력하신 정보는 상담 목적 외에는 사용되지 않습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <img src="ailifemaker_logo.png" alt="AI라이프 메이커 로고">
+            <b>AI라이프 메이커</b>
+          </div>
+          <p style="color:#c9bcae; font-size:.98rem; margin:0;">중장년과 소상공인을 위한 실습형 AI 실무 교육, AI라이프 메이커 저널입니다.</p>
+        </div>
+        <div>
+          <h4>바로가기</h4>
+          <div class="links">
+            <a href="#why">강의소개</a>
+            <a href="#curriculum">커리큘럼</a>
+            <a href="#instructor">강사소개</a>
+            <a href="#apply">강의신청</a>
+          </div>
+        </div>
+        <div>
+          <h4>문의</h4>
+          <div class="links">
+            <a href="https://blog.naver.com/ailifemaker" target="_blank" rel="noopener">공식 블로그 바로가기</a>
+            <span style="display:block; padding:6px 0; color:#c9bcae; font-size:.92rem;">전화·이메일 문의처는 추후 안내드립니다.</span>
+          </div>
+        </div>
+      </div>
+      <p class="copyright">© 2026 CHULHEE. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // 스크롤 시 헤더 배경 전환 (투명 → 베이지)
+    const headerEl = document.querySelector('header');
+    const toggleHeader = () => headerEl.classList.toggle('scrolled', window.scrollY > 60);
+    toggleHeader();
+    window.addEventListener('scroll', toggleHeader, { passive: true });
+
+    // 모바일 메뉴 토글
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => {
+      const open = mobileMenu.style.display === 'flex';
+      mobileMenu.style.display = open ? 'none' : 'flex';
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.style.display = 'none';
+    }));
+
+    // 스크롤 시 섹션 페이드인
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => io.observe(el));
+
+    // 신청 폼: 구글 시트로 데이터 전송
+    const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzNkVvhsouUv2l6uMCqIv4yilKLUYlylL8l7Iv2NDibVdG8RZRtrSPYvRXHCxdARsLy/exec';
+    const form = document.getElementById('applyForm');
+    const success = document.getElementById('formSuccess');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      fetch(SHEET_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({
+          name: fd.get('name'),
+          phone: fd.get('phone'),
+          email: fd.get('email'),
+          interest: fd.get('interest'),
+          message: fd.get('message')
+        })
+      });
+      success.style.display = 'block';
+      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      form.reset();
+    });
+  </script>
+
+</body>
+
+</html>
