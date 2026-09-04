@@ -1756,27 +1756,49 @@
     }, { threshold: 0.15 });
     revealEls.forEach(el => io.observe(el));
 
-    // 신청 폼: 구글 시트로 데이터 전송
-    const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzNkVvhsouUv2l6uMCqIv4yilKLUYlylL8l7Iv2NDibVdG8RZRtrSPYvRXHCxdARsLy/exec';
+    // 신청 폼: 구글 시트(business)로 데이터 전송
+    // 구글 시트 URL: https://docs.google.com/spreadsheets/d/1J_Rt4QWMG4lBk4ucv1r29bLj4TVafu6LxTbxd3EpupY/edit?gid=0#gid=0
+    const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzF469N0n2oPyUT7U_7DtNfqdNh7Q7DkP2uSOP6VBierJUZtspSBmMtez8z0R_0gmBVJw/exec';
     const form = document.getElementById('applyForm');
     const success = document.getElementById('formSuccess');
-    form.addEventListener('submit', (e) => {
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      const originalBtnText = submitBtn.innerText;
+      submitBtn.disabled = true;
+      submitBtn.innerText = '신청 접수 중...';
+
       const fd = new FormData(form);
-      fetch(SHEET_ENDPOINT, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify({
-          name: fd.get('name'),
-          phone: fd.get('phone'),
-          email: fd.get('email'),
-          interest: fd.get('interest'),
-          message: fd.get('message')
-        })
-      });
-      success.style.display = 'block';
-      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      form.reset();
+      const payload = {
+        name: fd.get('name'),
+        phone: fd.get('phone'),
+        email: fd.get('email'),
+        interest: fd.get('interest'),
+        message: fd.get('message')
+      };
+
+      try {
+        await fetch(SHEET_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        success.style.display = 'block';
+        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        form.reset();
+      } catch (err) {
+        alert('신청 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+        console.error(err);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalBtnText;
+      }
     });
   </script>
 
